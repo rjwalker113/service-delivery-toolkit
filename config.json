@@ -1,0 +1,17 @@
+{
+  "org_name": "Your Org",
+  "contact": "support@yourorg.com",
+  "app_name": "Service Delivery Toolkit",
+  "app_version": "1.0.0",
+  "require_admin": "True",
+  "branding": {
+    "icon": "branding/icon.ico",
+    "splash": "branding/splash.bmp"
+  },
+  "connection": {
+    "type": "azure_devops",
+    "script_repo_url": "",
+    "log_repo_url": "",
+    "pat": ""
+  }
+}
