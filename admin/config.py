@@ -25,10 +25,9 @@ build_number = options["app_version"]
 exe_name = f"{app_name} - v{build_number}"
 
 ## Client settings
-if options["require_admin"]:
-    require_admin=True
-else:
-    require_admin=False
+require_admin = bool(options["require_admin"])
+
+
 
 ## Connectivity
 repo_type = options["connection"]["type"]
