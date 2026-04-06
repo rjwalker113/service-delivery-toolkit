@@ -1,5 +1,8 @@
+# admin/build_client.py
+
 import subprocess
 from admin.config import options
+from admin.generate_version_file import generate_version_file
 
 # --- SET CONFIG VARS ---
 app_name = options["app_name"]
@@ -9,6 +12,9 @@ splash = options["branding"]["splash"]
 require_admin = options["require_admin"]
 
 exe_name = f"{app_name} - v{version}"
+
+# --- GENERATE VERSION RESOURCE ---
+version_file = generate_version_file(options)
 
 # --- PYINSTALLER COMMAND ---
 pyinstaller_cmd = [
@@ -20,6 +26,7 @@ pyinstaller_cmd = [
     "--windowed",
     "--clean",
     f"--splash={splash}",
+    f"--version-file={version_file}",
     "--add-data=assets:assets",
     "--add-data=branding:branding",
 ]
