@@ -1,3 +1,4 @@
+# admin/config.py
 import os
 import subprocess
 import json
@@ -16,7 +17,7 @@ contact = options["contact"]
 
 ## Branding
 appicon = options["branding"]["icon"]
-splashscreen = options["branding"]["splashscreen"]
+splashscreen = options["branding"]["splash"]
 
 ## Client details
 app_name = options["app_name"]
