@@ -36,17 +36,19 @@ class SDT_App(App):
         Window.icon = resource_path(config.branding.icon)
         Window.clearcolor = (1, 1, 1, 1)
 
-        # Backend-agnostic repo services
+        # Backend‑agnostic repo services
         self.script_repo = create_repo_service(
             config.connection.type,
             config.connection.script_repo_url,
-            config.connection.pat
+            config.connection.pat,
+            config.connection.branch
         )
 
         self.log_repo = create_repo_service(
             config.connection.type,
             config.connection.log_repo_url,
-            config.connection.pat
+            config.connection.pat,
+            config.connection.branch
         )
 
         # Preload metadata

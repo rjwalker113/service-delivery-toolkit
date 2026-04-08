@@ -12,6 +12,7 @@
     "type": "azure_devops",
     "script_repo_url": "",
     "log_repo_url": "",
+    "branch": "main",
     "pat": ""
   }
 }
