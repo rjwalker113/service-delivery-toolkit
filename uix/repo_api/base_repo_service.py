@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 import tempfile
 import os
+from utils.parse_help_block import parse_help_block
+
 # import urllib3
 
 @dataclass
@@ -62,11 +64,43 @@ class BaseRepoService:
             return []
         return self.parsed_tree.get("categories", {}).get(category, [])
 
-    def get_all_scripts(self) -> List[Dict[str, Any]]:
-        if not self.parsed_tree:
-            return []
-        categories = self.parsed_tree.get("categories", {})
-        return [script for scripts in categories.values() for script in scripts]
+    def get_all_scripts(self):
+        '''
+        Returns a list of script metadata dictionaries.
+        Each dictionary includes:
+        - name
+        - category
+        - path
+        - description (from .DESCRIPTION)
+        - synopsis (from .SYNOPSIS)
+        '''
+        scripts = []
+
+        for file in self.tree:
+            if not file["path"].lower().endswith(".ps1"):
+                continue
+
+            script_path = file["path"]
+            script_name = script_path.split("/")[-1]
+            category = script_path.split("/")[0]
+
+            # Download script text
+            script_text = self.download_file(script_path)
+            if not script_text:
+                continue
+
+            # Parse help block
+            help_data = parse_help_block(script_text)
+
+            scripts.append({
+                "name": script_name,
+                "category": category,
+                "path": script_path,
+                "description": help_data.get("description"),
+                "synopsis": help_data.get("synopsis")
+            })
+
+        return scripts
 
     def get_module_path(self) -> Optional[str]:
         '''Download and cache the PowerShell module used by scripts.'''
