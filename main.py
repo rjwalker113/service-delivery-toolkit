@@ -18,10 +18,11 @@ from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
+from uix.update.update_manager import UpdateManager
 
 from uix.utils import resource_path, register_all_fonts, cleanup
 from uix.repo_api.factory import create_repo_service
-from uix.main_screen.layout import MainLayout
+from uix.main_screen.main_layout import MainLayout
 from uix.views.announcements import Announcements
 from uix.custom_widgets.flex_modal import FlexModal
 
@@ -50,6 +51,9 @@ class SDT_App(App):
             config.connection.pat,
             config.connection.branch
         )
+
+        # Instantiate Update Manager
+        self.update_manager = UpdateManager(self.script_repo, config)
 
         # Preload metadata
         self.script_repo.fetch_tree("/")
@@ -83,9 +87,9 @@ class SDT_App(App):
             pyi_splash.close()
         except ImportError:
             pass
-
-        # TODO: new update system
-        self._show_announcements()
+        
+        # Clock for update check
+        Clock.schedule_once(lambda *_: self.update_manager.check_for_updates(), 0)
 
     def _show_announcements(self):
         modal = FlexModal(
