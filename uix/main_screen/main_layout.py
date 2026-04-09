@@ -7,6 +7,9 @@ from uix.main_screen.category_list import CategoryList
 from uix.main_screen.script_list import ScriptList
 from uix.main_screen.script_details import ScriptDetails
 
+from uix.modals.additional_details_modal import AdditionalDetailsModal
+from uix.script_runner import ScriptRunner
+
 
 class MainLayout(BoxLayout):
     '''
@@ -70,5 +73,14 @@ class MainLayout(BoxLayout):
         User clicked 'Additional Details'.
         MainLayout will later open the modal here.
         '''
-        # Placeholder — RunConsole or HelpModal will be triggered here.
-        pass
+        script_path = script.get("path")
+
+        # Run PowerShell help
+        help_output = ScriptRunner(f"Get-Help '{script_path}' -Full | Out-String")
+
+        # Open modal
+        modal = AdditionalDetailsModal(
+            script_name=script.get("name"),
+            help_text=help_output
+        )
+        modal.open()
