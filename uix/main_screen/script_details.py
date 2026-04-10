@@ -21,6 +21,7 @@ class ScriptDetails(BoxLayout, EventDispatcher):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.orientation = "vertical"
+        self.register_event_type("on_run_script")
         self.register_event_type("on_show_full_help")
 
         # Header
@@ -45,6 +46,15 @@ class ScriptDetails(BoxLayout, EventDispatcher):
         self.desc_label.bind(texture_size=self._update_label_height)
         self.scroll.add_widget(self.desc_label)
         self.add_widget(self.scroll)
+
+        # Run button
+        self.run_btn = Button(text="Run Script", size_hint_y=None, height=40)
+        self.run_btn.bind(on_release=self._on_run_clicked)
+        self.add_widget(self.run_btn)
+
+        def _on_run_clicked(self, *args):
+            self.dispatch("on_run_script", self.script)
+
 
         # Additional Details button
         self.details_btn = Button(
