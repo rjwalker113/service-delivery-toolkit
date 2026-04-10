@@ -8,7 +8,10 @@ from uix.main_screen.script_list import ScriptList
 from uix.main_screen.script_details import ScriptDetails
 
 from uix.modals.additional_details_modal import AdditionalDetailsModal
-from uix.script_runner import ScriptRunner
+# from uix.script_runner import ScriptRunner
+from uix.run_console import RunConsole
+from services.powershell_runner import run_powershell_streaming
+
 
 
 class MainLayout(BoxLayout):
@@ -46,6 +49,10 @@ class MainLayout(BoxLayout):
         self.add_widget(self.category_list)
         self.add_widget(self.script_list)
         self.add_widget(self.script_details)
+        
+        # Bind to script run
+        self.script_details.bind(on_run_script=self._on_run_script)
+
 
     # ------------------------------------------------------------
     # Event Handlers
@@ -84,3 +91,22 @@ class MainLayout(BoxLayout):
             help_text=help_output
         )
         modal.open()
+    
+    def _on_run_script(self, instance, script):
+        # Create the modal
+        self.run_console = RunConsole(script=script)
+        self.run_console.open()
+
+        # Start streaming PowerShell output
+        run_powershell_streaming(
+            script_path=script.get("path"),
+            on_output=self.run_console.append_output,
+            on_complete=self._on_script_complete
+        )
+    
+    def _on_script_complete(self, return_code):
+        # Optional: append a final line
+        if return_code == 0:
+            self.run_console.append_output("\nScript completed successfully.")
+        else:
+            self.run_console.append_output(f"\nScript exited with code {return_code}.")
